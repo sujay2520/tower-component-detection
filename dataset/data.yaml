@@ -1,0 +1,4 @@
+train: C:/Users/yashw/Desktop/TCDV/dataset/images/train
+val: C:/Users/yashw/Desktop/TCDV/dataset/images/val
+nc: 2
+names: ['supporting_tower', 'monopole_tower']

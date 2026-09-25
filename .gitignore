@@ -1,0 +1,28 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+.env
+
+# Large datasets (raw images)
+dataset/images/
+
+# Quality check scratch output
+check_output/
+
+# Backend uploads and outputs
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/outputs/*
+!backend/outputs/.gitkeep
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
