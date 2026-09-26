@@ -1,6 +1,38 @@
 {
-  "mAP50": 0.9588,
-  "mAP50-95": 0.8358,
-  "precision": 0.9489,
-  "recall": 0.9455
+  "dataset": "LabelImg Verified Dataset (Filtered + Copy-Paste Balanced + 8x Monopole Oversampled)",
+  "model": "YOLOv8n",
+  "epochs": 86,
+  "imgsz": 960,
+  "mAP50": 0.9919,
+  "mAP50_95": 0.5946,
+  "precision": 0.6088,
+  "recall": 1.0000,
+  "f1_score": 0.9600,
+  "optimal_confidence_threshold": 0.226,
+  "weights": "runs/tower_final/weights/best.pt",
+  "classes": {
+    "supporting_tower": {
+      "precision": 0.6411,
+      "recall": 1.0000,
+      "mAP50": 0.9888,
+      "instances": 12
+    },
+    "monopole_tower": {
+      "precision": 0.5764,
+      "recall": 1.0000,
+      "mAP50": 0.9950,
+      "instances": 3
+    }
+  },
+  "training_summary": {
+    "train_images": 535,
+    "val_images": 15,
+    "supporting_instances": 213,
+    "monopole_instances": 322,
+    "technique": "Soft-edge alpha copy-paste compositing + 8x minority class oversampling",
+    "confusion_matrix": {
+      "supporting_tower": {"predicted_supporting": 1.0, "predicted_monopole": 0.0},
+      "monopole_tower": {"predicted_supporting": 0.0, "predicted_monopole": 1.0}
+    }
+  }
 }

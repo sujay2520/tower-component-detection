@@ -9,8 +9,14 @@ env/
 ENV/
 .env
 
-# Large datasets (raw images)
-dataset/images/
+# Large datasets & ZIP archives
+*.zip
+dataset/
+dataset_final/
+dataset_merged/
+annotations_extracted/
+labelimg_annotations/
+tower-component-detection-main/
 
 # Quality check scratch output
 check_output/
@@ -20,6 +26,12 @@ backend/uploads/*
 !backend/uploads/.gitkeep
 backend/outputs/*
 !backend/outputs/.gitkeep
+
+# Large training run caches
+runs/
+!runs/tower_final/weights/best.pt
+yolo*.pt
+!best_tower_model.pt
 
 # IDE / OS files
 .vscode/

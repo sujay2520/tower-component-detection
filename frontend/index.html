@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tower Component Detection Dashboard</title>
+<title>Tower Component Detection & Classification Dashboard</title>
 <style>
   :root {
     --primary: #2563eb;
@@ -13,10 +13,11 @@
     --warning: #f59e0b;
     --bg: #f8fafc;
     --card: #ffffff;
-    --text: #1e293b;
+    --text: #0f172a;
     --text-muted: #64748b;
     --border: #e2e8f0;
-    --radius: 12px;
+    --radius: 14px;
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,75 +27,121 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
+    padding-bottom: 60px;
   }
 
   .header {
-    background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #7c3aed 100%);
     color: white;
-    padding: 24px 32px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    padding: 30px 36px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
-  .header h1 { font-size: 1.5rem; font-weight: 700; }
-  .header p { opacity: 0.85; font-size: 0.9rem; margin-top: 4px; }
+  .header-inner {
+    max-width: 1050px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; }
+  .header p { opacity: 0.9; font-size: 0.95rem; margin-top: 4px; }
+  .header-badge {
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
 
   .container {
-    max-width: 960px;
+    max-width: 1050px;
     margin: 0 auto;
-    padding: 32px 24px;
+    padding: 32px 20px;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .nav-tab {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+  .nav-tab.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
   }
 
   .card {
     background: var(--card);
     border-radius: var(--radius);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
-    padding: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    padding: 26px;
     margin-bottom: 24px;
   }
 
   .card h2 {
-    font-size: 1.1rem;
-    margin-bottom: 16px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 18px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
   }
 
   /* Upload Zone */
   #dropzone {
-    border: 2px dashed var(--border);
+    border: 2px dashed #cbd5e1;
     border-radius: var(--radius);
-    padding: 48px 24px;
+    padding: 50px 24px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.25s ease;
     background: #f8fafc;
   }
   #dropzone:hover, #dropzone.dragover {
     border-color: var(--primary);
     background: #eff6ff;
+    transform: scale(1.005);
   }
-  #dropzone .icon { font-size: 48px; margin-bottom: 12px; }
-  #dropzone p { color: var(--text-muted); }
-  #dropzone .formats { font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; }
+  #dropzone .icon { font-size: 52px; margin-bottom: 12px; }
+  #dropzone p { color: var(--text-muted); font-size: 1rem; }
+  #dropzone .formats { font-size: 0.85rem; color: #94a3b8; margin-top: 8px; }
 
   /* Preview */
   #preview-section { display: none; }
   #preview-container {
     display: flex;
-    gap: 16px;
-    align-items: flex-start;
+    gap: 24px;
+    align-items: center;
     flex-wrap: wrap;
   }
   #preview-img {
-    max-width: 300px;
-    max-height: 250px;
-    border-radius: 8px;
-    object-fit: contain;
+    max-width: 320px;
+    max-height: 260px;
+    border-radius: 10px;
+    object-fit: cover;
     border: 1px solid var(--border);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
   }
-  .file-info { flex: 1; min-width: 200px; }
-  .file-info .label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-  .file-info .value { font-size: 0.95rem; font-weight: 500; margin-bottom: 12px; }
+  .file-info { flex: 1; min-width: 240px; }
+  .file-info .label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 8px; }
+  .file-info .value { font-size: 1.05rem; font-weight: 600; margin-bottom: 8px; }
 
   /* Progress */
   .progress-bar {
@@ -102,14 +149,14 @@
     background: var(--border);
     border-radius: 999px;
     overflow: hidden;
-    height: 6px;
-    margin-top: 12px;
+    height: 8px;
+    margin-top: 14px;
     display: none;
   }
   .progress-fill {
     height: 100%;
     width: 0%;
-    background: var(--primary);
+    background: linear-gradient(90deg, var(--primary), #7c3aed);
     transition: width 0.3s;
     border-radius: 999px;
   }
@@ -119,22 +166,23 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 24px;
+    padding: 12px 26px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.2s;
   }
   .btn-primary {
     background: var(--primary);
     color: white;
   }
-  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
   .btn-primary:disabled {
     background: #94a3b8;
     cursor: not-allowed;
+    transform: none;
   }
   .btn-outline {
     background: white;
@@ -143,75 +191,140 @@
   }
   .btn-outline:hover { background: #f1f5f9; }
 
-  .btn-group { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+  .btn-group { display: flex; gap: 14px; margin-top: 20px; flex-wrap: wrap; }
 
-  /* Status */
+  /* Status Badge */
   .status-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 12px;
+    padding: 6px 14px;
     border-radius: 999px;
     font-size: 0.85rem;
-    font-weight: 600;
+    font-weight: 700;
   }
   .status-passed { background: #dcfce7; color: #166534; }
   .status-rejected { background: #fee2e2; color: #991b1b; }
   .status-processing { background: #dbeafe; color: #1e40af; }
 
-  /* Results */
-  #result-section { display: none; }
-  #result-img {
-    width: 100%;
-    border-radius: 8px;
+  /* Classification Hero Banner */
+  .classification-banner {
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .classification-banner.supporting {
+    background: linear-gradient(135deg, #15803d 0%, #16a34a 60%, #22c55e 100%);
+  }
+  .classification-banner.monopole {
+    background: linear-gradient(135deg, #c2410c 0%, #ea580c 60%, #f97316 100%);
+  }
+  .banner-icon { font-size: 52px; line-height: 1; }
+  .banner-content { flex: 1; }
+  .banner-tag {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.9;
+    font-weight: 700;
+  }
+  .banner-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 4px 0 6px 0;
+    letter-spacing: -0.01em;
+  }
+  .banner-desc { font-size: 0.92rem; opacity: 0.95; line-height: 1.4; }
+  .banner-badge {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 10px 18px;
+    border-radius: 12px;
+    text-align: center;
+  }
+  .banner-conf-val { font-size: 1.5rem; font-weight: 800; }
+  .banner-conf-lbl { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.9; }
+
+  /* Results Image Container */
+  .result-img-box {
+    text-align: center;
+    background: #0f172a;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
     border: 1px solid var(--border);
+  }
+  #result-img {
+    max-width: 100%;
+    max-height: 540px;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
   }
 
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 16px;
-    margin-top: 16px;
+    margin-top: 20px;
   }
   .stat-card {
     background: #f8fafc;
-    border-radius: 8px;
-    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
     text-align: center;
   }
   .stat-card .stat-value {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.6rem;
+    font-weight: 800;
     color: var(--primary);
   }
   .stat-card .stat-label {
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-top: 4px;
+    font-weight: 600;
   }
 
   /* Detections table */
   .detections-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 16px;
-    font-size: 0.9rem;
+    margin-top: 18px;
+    font-size: 0.92rem;
   }
   .detections-table th {
     text-align: left;
-    padding: 10px 12px;
+    padding: 12px 14px;
     border-bottom: 2px solid var(--border);
     color: var(--text-muted);
     font-size: 0.8rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
   }
   .detections-table td {
-    padding: 10px 12px;
+    padding: 12px 14px;
     border-bottom: 1px solid var(--border);
   }
+
+  .badge-class {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .badge-supporting { background: #dcfce7; color: #15803d; }
+  .badge-monopole { background: #ffedd5; color: #c2410c; }
 
   .conf-bar {
     display: inline-block;
@@ -224,23 +337,62 @@
 
   .quality-details {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px;
-    margin-top: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-top: 14px;
   }
   .quality-item {
     background: #f8fafc;
-    padding: 12px;
-    border-radius: 8px;
+    border: 1px solid var(--border);
+    padding: 14px;
+    border-radius: 10px;
   }
-  .quality-item .ql { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
-  .quality-item .qv { font-weight: 600; margin-top: 2px; }
+  .quality-item .ql { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+  .quality-item .qv { font-weight: 700; margin-top: 4px; font-size: 1rem; }
+
+  /* Training Metrics Section */
+  .metrics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .gallery-card {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .gallery-card h4 {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    background: white;
+    border-bottom: 1px solid var(--border);
+  }
+  .gallery-card img {
+    width: 100%;
+    display: block;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .gallery-card img:hover {
+    transform: scale(1.02);
+  }
 
   /* Spinner */
   .spinner {
     display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border: 3px solid rgba(255,255,255,0.3);
     border-radius: 50%;
     border-top-color: white;
@@ -250,83 +402,149 @@
 
   .hidden { display: none !important; }
 
-  @media (max-width: 600px) {
+  @media (max-width: 640px) {
     .container { padding: 16px; }
     #preview-container { flex-direction: column; }
     #preview-img { max-width: 100%; }
+    .classification-banner { flex-direction: column; text-align: center; }
+    .gallery-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>🗼 Tower Component Detection</h1>
-  <p>AI-powered detection of supporting towers and monopole towers</p>
+  <div class="header-inner">
+    <div>
+      <h1>🗼 Tower Component Detection & Classification</h1>
+      <p>Autonomous AI detection for Supporting Towers (Lattice/Truss) and Monopole Towers</p>
+    </div>
+    <div class="header-badge" id="system-status-badge">
+      ⚡ System Ready
+    </div>
+  </div>
 </div>
 
 <div class="container">
 
-  <!-- Upload Card -->
-  <div class="card" id="upload-card">
-    <h2>📤 Upload Image</h2>
-    <div id="dropzone">
-      <div class="icon">📷</div>
-      <p><strong>Click to select</strong> or drag an image here</p>
-      <p class="formats">Supports JPG, JPEG, PNG</p>
-      <input type="file" id="file-input" accept="image/*" style="display:none">
-    </div>
-    <div class="progress-bar" id="progress-bar">
-      <div class="progress-fill" id="progress-fill"></div>
-    </div>
+  <!-- Nav Tabs -->
+  <div class="nav-tabs">
+    <div class="nav-tab active" id="tab-detect" onclick="switchTab('detect')">🔍 Detection Dashboard</div>
+    <div class="nav-tab" id="tab-metrics" onclick="switchTab('metrics')">📈 Training Metrics & Graphs</div>
   </div>
 
-  <!-- Preview Card -->
-  <div class="card" id="preview-section">
-    <h2>🖼️ Image Preview</h2>
-    <div id="preview-container">
-      <img id="preview-img" src="" alt="preview">
-      <div class="file-info">
-        <div class="label">Filename</div>
-        <div class="value" id="info-filename">—</div>
-        <div class="label">File Size</div>
-        <div class="value" id="info-filesize">—</div>
-        <div class="label">Status</div>
-        <div class="value" id="info-status">
-          <span class="status-badge status-processing">⏳ Uploaded — ready to process</span>
-        </div>
+  <!-- VIEW 1: DETECTION VIEW -->
+  <div id="view-detect">
+
+    <!-- Upload Card -->
+    <div class="card" id="upload-card">
+      <h2>📤 Upload Tower Image</h2>
+      <div id="dropzone">
+        <div class="icon">📸</div>
+        <p><strong>Click to choose an image</strong> or drag and drop here</p>
+        <p class="formats">Supports standard camera photos, drone imagery, high-resolution JPG, PNG, WEBP</p>
+        <input type="file" id="file-input" accept="image/*" style="display:none">
+      </div>
+      <div class="progress-bar" id="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
       </div>
     </div>
-    <div class="btn-group">
-      <button class="btn btn-primary" id="execute-btn">🔍 Run Detection</button>
-      <button class="btn btn-outline" id="reset-btn">↩ Upload Another</button>
+
+    <!-- Preview Card -->
+    <div class="card" id="preview-section">
+      <h2>🖼️ Selected Image Preview</h2>
+      <div id="preview-container">
+        <img id="preview-img" src="" alt="preview">
+        <div class="file-info">
+          <div class="label">Filename</div>
+          <div class="value" id="info-filename">—</div>
+          <div class="label">File Size</div>
+          <div class="value" id="info-filesize">—</div>
+          <div class="label">Analysis Pipeline Status</div>
+          <div class="value" id="info-status">
+            <span class="status-badge status-processing">⏳ Uploaded — ready to analyze</span>
+          </div>
+        </div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" id="execute-btn">🔍 Run Detection & Classification</button>
+        <button class="btn btn-outline" id="reset-btn">↩ Upload Another Image</button>
+      </div>
     </div>
+
+    <!-- Quality Assessment Card -->
+    <div class="card hidden" id="quality-card">
+      <h2>🔬 Image Quality Assessment (Pre-Filter)</h2>
+      <div id="quality-status"></div>
+      <div class="quality-details" id="quality-details"></div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="card hidden" id="result-section">
+      <h2>🎯 Tower Classification Result</h2>
+
+      <!-- Primary Tower Type Banner -->
+      <div id="classification-banner-container"></div>
+
+      <!-- Annotated Image Display -->
+      <div class="result-img-box">
+        <img id="result-img" src="" alt="detection output">
+      </div>
+
+      <!-- Quick Stats Grid -->
+      <div class="stats-grid" id="stats-grid"></div>
+
+      <!-- Detections Table -->
+      <h3 style="margin-top: 28px; font-size: 1.05rem; font-weight: 700;">Identified Tower Components & Bounding Boxes</h3>
+      <table class="detections-table">
+        <thead>
+          <tr>
+            <th>Tower Type</th>
+            <th>Confidence</th>
+            <th>Coordinates [X1, Y1, X2, Y2]</th>
+          </tr>
+        </thead>
+        <tbody id="detections-body"></tbody>
+      </table>
+    </div>
+
   </div>
 
-  <!-- Quality Check -->
-  <div class="card hidden" id="quality-card">
-    <h2>🔬 Quality Assessment</h2>
-    <div id="quality-status"></div>
-    <div class="quality-details" id="quality-details"></div>
-  </div>
+  <!-- VIEW 2: METRICS & GRAPHS VIEW -->
+  <div id="view-metrics" class="hidden">
+    <div class="card">
+      <div class="metrics-header">
+        <div>
+          <h2>📈 Model Evaluation Metrics (Test & Validation)</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Evaluated on Verified LabelImg Validation Set (Balanced + Copy-Paste Augmented)</p>
+        </div>
+        <button class="btn btn-outline" onclick="loadMetrics()">🔄 Refresh Data</button>
+      </div>
 
-  <!-- Results Card -->
-  <div class="card" id="result-section">
-    <h2>📊 Detection Results</h2>
-    <img id="result-img" src="" alt="detection output">
+      <div class="stats-grid" id="eval-metrics-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="m-map50">—</div>
+          <div class="stat-label">mAP @ 0.50</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="m-map50-95">—</div>
+          <div class="stat-label">mAP @ 0.50-0.95</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="m-precision">—</div>
+          <div class="stat-label">Precision</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="m-recall">—</div>
+          <div class="stat-label">Recall</div>
+        </div>
+      </div>
 
-    <div class="stats-grid" id="stats-grid"></div>
-
-    <h3 style="margin-top: 24px; font-size: 1rem;">Detected Components</h3>
-    <table class="detections-table">
-      <thead>
-        <tr>
-          <th>Class</th>
-          <th>Confidence</th>
-          <th>Bounding Box</th>
-        </tr>
-      </thead>
-      <tbody id="detections-body"></tbody>
-    </table>
+      <h3 style="margin-top: 32px; font-size: 1.1rem; font-weight: 700;">📊 Training & Validation Metric Plots</h3>
+      <div class="gallery-grid" id="graphs-gallery">
+        <div style="color: var(--text-muted); padding: 20px;">Loading training graphs...</div>
+      </div>
+    </div>
   </div>
 
 </div>
