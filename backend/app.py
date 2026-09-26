@@ -297,21 +297,6 @@ def execute():
         class_conf_accum[cls_name] = class_conf_accum.get(cls_name, 0.0) + conf
         class_box_counts[cls_name] = class_box_counts.get(cls_name, 0) + 1
 
-        # Draw bounding box
-        x1, y1, x2, y2 = map(int, xyxy)
-        color_info = CLASS_INFO.get(cls_name, {"color": (0, 255, 0)})
-        box_color = color_info["color"]
-        cv2.rectangle(annotated_img, (x1, y1), (x2, y2), box_color, 3)
-        
-        # Draw label badge
-        label = f"{cls_name.replace('_', ' ').title()} {conf * 100:.1f}%"
-        (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.65, 2)
-        bg_y1 = max(y1 - th - 12, 0)
-        bg_y2 = max(y1, th + 12)
-        cv2.rectangle(annotated_img, (x1, bg_y1), (x1 + tw + 10, bg_y2), box_color, -1)
-        cv2.putText(annotated_img, label, (x1 + 5, bg_y2 - 6),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 255), 2, cv2.LINE_AA)
-
     # Determine Primary Classification
     verification_data = None
     if len(detections) > 0:
@@ -424,6 +409,30 @@ def execute():
         )
         classification_method = "Structural Analysis (Edge + Hough + Texture)"
         verification_data = struct_result
+
+    # Synchronize detections with final classified label and calibrated confidence
+    if len(detections) > 0:
+        detections[0]["class"] = primary_cls
+        detections[0]["confidence"] = round(primary_conf, 4)
+
+    # Draw final annotated bounding boxes matching banner/card confidence exactly
+    for d in detections:
+        bx = d["box"]
+        x1, y1, x2, y2 = map(int, bx)
+        d_cls = d["class"]
+        d_conf = d["confidence"]
+        color_info = CLASS_INFO.get(d_cls, {"color": (0, 255, 0)})
+        box_color = color_info["color"]
+        cv2.rectangle(annotated_img, (x1, y1), (x2, y2), box_color, 3)
+        
+        # Draw label badge displaying exact synchronized confidence
+        label = f"{d_cls.replace('_', ' ').title()} {d_conf * 100:.1f}%"
+        (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.65, 2)
+        bg_y1 = max(y1 - th - 12, 0)
+        bg_y2 = max(y1, th + 12)
+        cv2.rectangle(annotated_img, (x1, bg_y1), (x1 + tw + 10, bg_y2), box_color, -1)
+        cv2.putText(annotated_img, label, (x1 + 5, bg_y2 - 6),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 255), 2, cv2.LINE_AA)
 
     # Save annotated output image
     output_filename = f"{job_id}_result.jpg"

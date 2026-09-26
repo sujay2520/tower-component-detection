@@ -3,24 +3,26 @@
   "model": "YOLOv8n",
   "epochs": 86,
   "imgsz": 960,
-  "mAP50": 0.9919,
-  "mAP50_95": 0.5946,
-  "precision": 0.6088,
+  "mAP50": 0.9888,
+  "mAP50_95": 0.6266,
+  "precision": 0.5809,
   "recall": 1.0000,
   "f1_score": 0.9600,
   "optimal_confidence_threshold": 0.226,
   "weights": "runs/tower_final/weights/best.pt",
   "classes": {
     "supporting_tower": {
-      "precision": 0.6411,
+      "precision": 0.6250,
       "recall": 1.0000,
-      "mAP50": 0.9888,
+      "mAP50": 0.9830,
+      "mAP50_95": 0.5891,
       "instances": 12
     },
     "monopole_tower": {
-      "precision": 0.5764,
+      "precision": 0.5370,
       "recall": 1.0000,
       "mAP50": 0.9950,
+      "mAP50_95": 0.6640,
       "instances": 3
     }
   },
