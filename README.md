@@ -84,20 +84,7 @@ flowchart TD
 
 ---
 
-## 🎤 How to Explain to Judges & Technical Evaluators
 
-When judges or reviewers ask about the architecture, use this crisp 4-point technical summary:
-
-1. **The Core Challenge (Class Imbalance & Scale)**:
-   - *"Telecommunication datasets typically have 5x to 10x more lattice supporting towers than monopoles. In our original data, monopoles were severely underrepresented. Standard models suffer from majority-class bias."*
-2. **Our Solution (Copy-Paste Compositing & 8x Oversampling)**:
-   - *"We extracted high-resolution alpha-masked monopole profiles and composited them onto diverse aerial backgrounds with brightness/contrast jittering. This balanced the training set to 322 monopole instances and 213 supporting tower instances without using prohibited external datasets."*
-3. **Resolution Optimization (`imgsz=960`)**:
-   - *"Downscaling towers to standard 640px blurs diagonal lattice truss members into flat poles, causing false monopole detections. Training and inferring at native 960px preserves individual cross-braces."*
-4. **Hybrid Detection (Neural Network + Deterministic CV)**:
-   - *"Instead of trusting a neural network blindly, we pair YOLOv8 with a Hough Line Transform structural analysis. If an image contains $\ge 30$ diagonal lines with a diagonal ratio $\ge 25\%$, the physical geometry proves it is a lattice framework. This achieved 100% recall with zero false monopole classifications."*
-
----
 
 ## 🛠️ Installation & Setup
 
