@@ -79,7 +79,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- |
 | **Sujay** *(Project Lead)* | [@sujay2520](https://github.com/sujay2520) | `sujayofficial25@gmail.com` | Deep Learning Architecture, YOLOv8 Model Training, Structural Analyzer Algorithm, System Design |
 | **Poornachandra** | [@humanoid-co](https://github.com/humanoid-co) | `pmpoornachandra@gmail.com` | Image Quality Assessment Filter (Blur, Exposure, Brightness), Computer Vision Preprocessing |
-| **Hemanth Kumar** | [@phemanthkumar0707-a11y](https://github.com/phemanthkumar-0707) | `phemanthkumar0707@gmail.com` | Model Evaluation, Precision-Recall Validation, Confusion Matrix Benchmarks |
+| **Hemanth Kumar** | [@phemanthkumar0707-a11y](https://github.com/hemanthkumar-0707) | `phemanthkumar0707@gmail.com` | Model Evaluation, Precision-Recall Validation, Confusion Matrix Benchmarks |
 | **Dushyanth M** | [@Dushyanthm07](https://github.com/Dushyanthm07) | `ddushyanthm@gmail.com` | Dashboard Interface, Single-Command Execution Runner (`run.py`), VS Code Integration |
 
 ---
